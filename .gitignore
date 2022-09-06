@@ -151,3 +151,18 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 configs/apikey.cfg
+templates/GetCity.html
+*.svg
+package-lock.json
+package.json
+main.py
+lastcache.time
+gui.py
+main.py
+main.py
+main.py
+configs/usrloc.cfg
+cache.json
+apikeystxt
+apikey.k
+.old

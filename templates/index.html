@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+         <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+        </style> 
+        <!-- CSS only -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+        <!-- JavaScript Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>    
+        <link rel="manifest" href="static/manifest.webmanifest">
+    </head>
+    <style>
+    .main {
+        background-color: #008cff;
+        position:absolute;
+        top: 58px;
+        right:0px;
+        bottom:0px;
+        left:0px;        
+    }
+    .row-footer {
+        background-color: #008cff;
+        position:absolute;
+        bottom:0px;
+        bottom: -0.5px;       
+    }
+
+
+
+      @font-face { font-family: Lato; src: url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap'); } 
+      p {
+         font-family: Lato
+      }    
+
+    </style>
+    <body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+        <p>weather app</p>
+            </button>
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                settings
+                                </button>
+                    </li>
+                </ul>
+            <!-- End Right Element -->
+        </div>
+    </nav>
+
+    <!-- Button trigger modal -->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Settings</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label" >City</label>
+                    <input type="City" class="form-control" id="city_collect" value="" aria-describedby="emailHelp">
+                    <div id="emailHelp" class="form-text">We do not store this information on our servers</div>
+                </div>
+                <div class="btn-group">
+                <select class="selectpicker" id="lang_collect" data-width="fit">
+                    <option data-content='<span class="flag-icon flag-icon-us"></span> Polish'>Polski</option>
+                    <option  data-content='<span class="flag-icon flag-icon-mx"></span> English'>English</option>
+                </select>
+                </div>  
+                
+            </form>
+        <br>
+
+        <div id="succes" style="display:none" class="alert alert-success" role="alert">
+        Zapisano pomyślnie!
+        </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="save" class="btn btn-primary" onclick="get_data();">Save</button>
+            
+        </div>
+            <script>
+
+                document.getElementById('city_collect').setAttribute('value', localStorage.getItem('city'));
+
+                async function get_data() {
+
+                    let city = document.getElementById('city_collect').value;
+                    let lang = document.getElementById('lang_collect').value;
+                    console.log(city);
+                    console.log(lang);
+
+                    if (lang == "Polski") {
+                        localStorage.setItem('lang', 'pl');
+                    } else {
+                        localStorage.setItem('lang', 'en');
+                    }
+
+                    localStorage.setItem('city', city);
+                    //localStorage.setItem('lang', lang);
+
+                    document.getElementById("succes").style.display = "";
+                }
+            </script>        
+        </div>
+    </div>
+    </div>
+    <div class="main" bg-color=blue>
+        <center>
+        <h1 class="title1"></h1>
+            <div class="image">
+                <img src="{{url_for('static', filename='sunny.svg')}}" alt="" width="400" height="400">    
+            </div> 
+        <p>Current weather</p>
+        <p id="temp"></p>
+        <p id="ftemp"></p>
+        <p id="pres"></p>
+        <p id="humidity"></p>
+        <p id="clouds"></p>
+        <p id="visibility"></p>
+        <p id="wind_speed"></p>
+        <p id=""></p>
+        <ul>
+        
+        </center>
+    </div>
+
+    <div class="row-footer">
+        <p><b>footer</b> (fixed height)</p>
+    </div>
+
+    </body>
+    <script>
+
+    //getWeather();
+    //saveform();
+
+    window.addEventListener('load' , () => {
+        registerSW();
+        getWeather();
+    });
+
+    let isCacheSupported = 'caches' in window;
+    
+
+    async function getWeather() {
+        let city = localStorage.getItem('city');
+        let lang = localStorage.getItem('lang');
+        const api_url = "/get-weather/" + city + "/" + lang;
+        const responce = await fetch(api_url)
+        const data = await responce.json();
+
+        //document.getElementById('title1').innerHTML = "pogoda w " + data.city;
+
+        document.getElementById('temp').innerHTML = data.responce.temp;
+        document.getElementById('ftemp').innerHTML = data.responce.feels_like;
+        document.getElementById('pres').innerHTML = data.responce.pressure;
+        document.getElementById('humidity').innerHTML = data.responce.humidity;
+        document.getElementById('clouds').innerHTML = data.responce.clouds;
+        document.getElementById('visibility').innerHTML = data.responce.visibility;
+        document.getElementById('wind_speed').innerHTML = data.responce.wind_speed;
+
+
+
+        console.log(data);
+        console.log(data.responce);
+        console.log(data.responce.temp);
+    }
+
+
+
+
+    //caches.open('cacheName').then( cache => {});
+
+    async function registerSW() {
+        if ('serviceWorker' in navigator) {
+            try {
+                await navigator.serviceWorker.register('/sw.js');
+            } catch (error) {
+                console.log('Service Worker registration failed: ', error);
+            }
+        }
+    }
+
+    </script>
+</html>
