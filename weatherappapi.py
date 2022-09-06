@@ -64,7 +64,7 @@ def get_weather(city, lang):
     current_time = time.time()
 
     geolocator = Nominatim(user_agent="weatherapp")
-    api_key = ""
+    #api_key = ""
     location = geolocator.geocode(city)
     lat = location.latitude
     lon = location.longitude
@@ -90,14 +90,14 @@ def get_weather(city, lang):
         #asender = "temperatur3a wynosi: " + str(data['alerts'][1])
         #print(asender)
         #alert = data['alert'][0]['description']
-        img = data['current']['weather'][0]['description']
+        #img = data['current']['weather'][0]['description']
         otemp = data['current']['temp']
         oftemp = data['current']['feels_like']
         
         sunset_time = data['current']['sunset']
 
         temp = str(round(otemp, 1)) + "°"
-        ftemp = str(round(oftemp, 1)) + "°"
+        ftemp = "odczuwalna temperatura " + str(round(oftemp, 1)) + "°"
         pres = "ciśninie wynosi: " + str(data['current']['pressure']) + "hPa"
         humidity = "wilgotność wynosi: "+ str(data['current']['humidity']) + "%"
         clouds = "chmury: "+ str(data['current']['clouds'])
@@ -107,18 +107,13 @@ def get_weather(city, lang):
         return_data = temp + "\n" + ftemp + "\n" + pres + "\n" + humidity + "\n" + clouds + "\n" + visibility + "\n" + wind_speed
         #print(return_data)
 
-        if current_time > sunset_time:
-            bgcolor = "#0f0f41"
-        else:
-            bgcolor = "#008cff"
-
         print(current_time)
         print(sunset_time)
 
         returnd={
         "responce": {
             #"alert": alert,
-            "img": img,
+            #"img": img,
             #"asender": asender,
             "temp": temp,
             "ftemp": ftemp,
@@ -126,8 +121,7 @@ def get_weather(city, lang):
             "humidity": humidity,
             "clouds": clouds,
             "visibility": visibility,
-            "wind_speed": wind_speed,
-            "bgcolor": bgcolor
+            "wind_speed": wind_speed
         }
         }
         #rint(jsonify(return_data))

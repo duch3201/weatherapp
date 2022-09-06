@@ -17,32 +17,32 @@
         <link rel="manifest" href="static/manifest.webmanifest">
     </head>
     <style>
-    .main {
-        background-color: #008cff;
+        .main {
+            background-color: #008cff;
 
-        top: 58px;
-        right:0px;
-        bottom:0px;
-        left:0px;        
-    }
-    .row-footer {
-        background-color: #008cff;
+            top: 58px;
+            right:0px;
+            bottom:0px;
+            left:0px;        
+        }
+        .row-footer {
+            background-color: #008cff;
+            
+            bottom: -0.5px;       
+        }
+
+        .temp {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         
-        bottom: -0.5px;       
-    }
+        }
 
-    .temp {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    
-    }
-
-    @font-face { font-family: Lato; src: url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap'); } 
-    p {
-        font-family: Lato
-    }    
+        @font-face { font-family: Lato; src: url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap'); } 
+        p {
+            font-family: Lato
+        }    
 
     </style>
     <body>
@@ -144,7 +144,7 @@
         </div>
     </div>
     </div>
-    <div id="main" bg-color=blue>
+    <div class="main" bg-color="blue">
 
         <div class="alert alert-danger" id="oDown" style="display:none" role="alert">
             openweatherapi API is DOWN!
@@ -267,7 +267,6 @@
                 document.getElementById('clouds').innerHTML = data.responce.clouds;
                 document.getElementById('visibility').innerHTML = data.responce.visibility;
                 document.getElementById('wind_speed').innerHTML = data.responce.wind_speed;
-                document.getElementById('main').style.color = data.responce.bgcolor
 
                 let modcity = "Pogoda w " + city;
                 document.getElementById("city").innerHTML = modcity;
