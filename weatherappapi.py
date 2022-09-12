@@ -9,6 +9,8 @@ import uuid
 import time
 from time import gmtime, strftime
 import datetime
+from datetime import datetime
+import pytz
 
 app = Flask(__name__)
 
@@ -61,8 +63,6 @@ def get_weather(city, lang):
     if lang == "null":
         lang = "en"
 
-    current_time = time.time()
-
     geolocator = Nominatim(user_agent="weatherapp")
     #api_key = ""
     location = geolocator.geocode(city)
@@ -82,8 +82,12 @@ def get_weather(city, lang):
 
         #p = '{"responce": ["Python", "Java"]}'
 
-        
-
+        if "alerts" in data:
+            alert = data['alerts'][0]['description']
+            event = data['alerts'][0]['event']
+        else:
+            alert = "none"
+            event = "none"
 
         #alert = "temperatura wynosi: " + str(data['alerts']['description'])
         #print(alert)
@@ -97,6 +101,7 @@ def get_weather(city, lang):
         sunset_time = data['current']['sunset']
 
         temp = str(round(otemp, 1)) + "°"
+        status = data['current']['weather'][0]["description"]
         ftemp = "odczuwalna temperatura " + str(round(oftemp, 1)) + "°"
         pres = "ciśninie wynosi: " + str(data['current']['pressure']) + "hPa"
         humidity = "wilgotność wynosi: "+ str(data['current']['humidity']) + "%"
@@ -107,20 +112,20 @@ def get_weather(city, lang):
         return_data = temp + "\n" + ftemp + "\n" + pres + "\n" + humidity + "\n" + clouds + "\n" + visibility + "\n" + wind_speed
         #print(return_data)
 
-        print(current_time)
-        print(sunset_time)
+        timezone = pytz.timezone(data['timezone'])
+        timeold = datetime.now(timezone)
+        time = timeold.strftime("%H:%M")
 
         returnd={
         "responce": {
-            #"alert": alert,
+            "alert": alert,
+            "event": event,
             #"img": img,
             #"asender": asender,
+            "time": time,
             "temp": temp,
             "ftemp": ftemp,
-            "pres": pres,
-            "humidity": humidity,
-            "clouds": clouds,
-            "visibility": visibility,
+            "status": status,
             "wind_speed": wind_speed
         }
         }
@@ -135,27 +140,40 @@ def get_weather(city, lang):
 
         
     elif lang == "en":
+
+        if "alerts" in data:
+            alert = data['alerts'][0]['description']
+            event = data['alerts'][0]['event']
+        else:
+            alert = "none"
+            event = "none"
+
+        status = data['current']['weather'][0]['description']
         otemp = data['current']['temp']
         oftemp = data['current']['feels_like']
         
         temp = str(round(otemp, 1)) + "°"
-        ftemp = str(round(oftemp, 1)) + "°"
+        ftemp = "Feels Like " + str(round(oftemp, 1)) + "°"
         pres = "pressure: " + str(data['current']['pressure']) + "hPa"
         humidity = "humidity: "+ str(data['current']['humidity']) + "%"
         clouds = "clouds: "+ str(data['current']['clouds'])
         visibility = "visibility: "+ str(data['current']['visibility'])
-        wind_speed = "wind speed : "+ str(data['current']['wind_speed']) + "m/s"
+        wind_speed = "wind speed "+ str(data['current']['wind_speed']) + "m/s"
         return_data = temp + "\n" + ftemp + "\n" + pres + "\n" + humidity + "\n" + clouds + "\n" + visibility + "\n" + wind_speed
         #print(return_data)    
 
+        timezone = pytz.timezone(data['timezone'])
+        timeold = datetime.now(timezone)
+        time = timeold.strftime("%H:%M")
+
         returnd={
         "responce": {
+            "alert": alert,
+	    "status": status,
+            "event": event,          
+            "time": time,            
             "temp": temp,
             "ftemp": ftemp,
-            "pres": pres,
-            "humidity": humidity,
-            "clouds": clouds,
-            "visibility": visibility,
             "wind_speed": wind_speed
         }
         }
@@ -172,22 +190,11 @@ def get_weather(city, lang):
 def main(city, lang):
     #get_weather(city)
     return get_weather(city, lang)
+    #return jsonify("504")
 
 @app.route("/rawdata/<city>/")
 def raw(city):
     return get_raw(city)
-
-@app.route("/create-key/<adminkey>")
-def create_key(adminkey):
-        if adminkey == "20070806":
-            apikey = str(uuid.uuid4())
-            apikey = apikey + '\n'
-            with open('apikeystxt', 'a') as apikeys:
-                apikeys.write(apikey)
-                
-            return apikey
-        else:
-            return "Invalid key"
 
 @app.route("/devtest")
 def devtest():
@@ -201,10 +208,6 @@ def response():
     res = make_response("/get-city-cookie") 
     res.set_cookie('city', city)
     return res
-
-@app.route('/cachedata')
-def pcachedata():
-    cachedata()
 
 @app.route("/testui")
 def testui():
@@ -223,7 +226,6 @@ def isOnline():
 
     returnd={
         "responce": {
-            "mainapi": "online",
             "openweatherapi": openweatherapi
         }
         }
@@ -239,4 +241,4 @@ def root():
 
 
 if __name__ == '__main__':
-      app.run(host='0.0.0.0', port=5000, debug=True)
+      app.run(host='0.0.0.0', port=80, debug=True)
