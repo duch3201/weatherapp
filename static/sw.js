@@ -8,7 +8,7 @@ const cacheFiles = [
     '/static/cloud_rain.svg',
     '/static/cloud_snow.svg',
     '/static/day_cloud_rain.svg',
-    '/static/sunny.svg',
+    '/static/icon.svg',
 ];
 
 self.addEventListener('install', function(event) {

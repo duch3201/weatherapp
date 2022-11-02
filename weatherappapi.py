@@ -196,6 +196,10 @@ def main(city, lang):
 def raw(city):
     return get_raw(city)
 
+@app.route("/test")
+def test():
+    return render_template("index copy.html")
+
 @app.route("/devtest")
 def devtest():
     return render_template("devtest.html")
@@ -233,12 +237,11 @@ def isOnline():
 
 @app.route("/?source=pwa")
 def pwa():
-    return redirect("/devtest")
+    return render_template("devtest.html")
 
 @app.route("/")
 def root():
-    return redirect('/testui')
-
+    return render_template("devtest.html")
 
 if __name__ == '__main__':
-      app.run(host='0.0.0.0', port=80, debug=True)
+      app.run(host='0.0.0.0', port=5000, debug=True)
